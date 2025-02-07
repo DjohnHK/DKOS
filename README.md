@@ -25,6 +25,8 @@ Abrir uma issue para discutir mudanças ou melhorias.
 Enviar um pull request com suas contribuições.
 Sugerir novas funcionalidades ou melhorias na documentação.
 
+Faço personalização da ISO com ajustes e programas conforme solicitado, entre em contato para cotação.
+
 Contato
 E-mail: djohnhermann@gmail.com
 WhatsApp: (47) 99151-6592
