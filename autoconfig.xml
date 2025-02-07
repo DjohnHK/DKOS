@@ -53,7 +53,7 @@
       <!-- Configurar AutoLogon com senha vazia -->
       <AutoLogon>
         <Password>
-          <Value></Value>
+          <Value>123</Value>
           <PlainText>true</PlainText>
         </Password>
         <Enabled>true</Enabled>
@@ -111,11 +111,20 @@
           <Order>10</Order>
           <RequiresUserInput>false</RequiresUserInput>
         </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <CommandLine>cmd /c net user DK ""</CommandLine>
+          <Order>11</Order>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
       </FirstLogonCommands>
       <UserAccounts>
         <LocalAccounts>
           <!-- Criar conta DK sem senha e configurada para nunca expirar -->
           <LocalAccount wcm:action="add">
+            <Password>
+              <Value>123</Value>
+              <PlainText>true</PlainText>
+            </Password>
             <Name>DK</Name>
             <Group>Administrators</Group>
             <DisplayName>DK</DisplayName>

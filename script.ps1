@@ -150,7 +150,9 @@ reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v EnableSuperfetch /t REG_DWORD /d 5 /f
 
 # Desabilita "News and Interests" na barra de tarefas
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Feeds" /v ShellFeedsTaskbarViewMode /t REG_DWORD /d 2 /f
+reg add "HKCU:\Software\Microsoft\Windows\CurrentVersion\Feeds" /v "ShellFeedsTaskbarViewMode" /d 2 /t REG_DWORD /f
+reg add "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "HideSCAMeetNow" /d 1 /t REG_DWORD /f
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" /v "EnableFeeds" /d 0 /t REG_DWORD /f
 
 ###############################################################################
 # 4. Configurações do Usuário e Sistema
@@ -208,8 +210,8 @@ Clear-Host
 Write-Host "Instalando softwares. Aguarde..." -ForegroundColor Yellow
 $Source = "C:\temp\sw"
 
-# [1/6] Instalação do 7-Zip
-Write-Host "[1/6] Instalando 7-Zip:" -NoNewline
+# [1/7] Instalação do 7-Zip
+Write-Host "[1/7] Instalando 7-Zip:" -NoNewline
 $Setup = Start-Process "$Source\Softwares\7z.exe" -ArgumentList "/S" -WindowStyle Hidden -PassThru -Wait
 if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
     Write-Host " Sucesso" -ForegroundColor Green
@@ -218,15 +220,15 @@ if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
 }
 Remove-Variable Setup -ErrorAction SilentlyContinue
 
-# [2/6] Instalação do Runtime dotNet
-Write-Host "[2/6] Instalando Runtime dotNet:" -NoNewline
+# [2/7] Instalação do Runtime dotNet
+Write-Host "[2/7] Instalando Runtime dotNet:" -NoNewline
 $Setup = Start-Process "$Source\Softwares\dotNet.exe" -ArgumentList "/NoSetupVersionCheck /q /norestart" -WindowStyle Hidden -PassThru -Wait
 # Nota: mesmo em caso de erro, você optou por tratar como sucesso
 Write-Host " Sucesso" -ForegroundColor Green
 Remove-Variable Setup -ErrorAction SilentlyContinue
 
-# [3/6] Instalação dos Runtimes C++
-Write-Host "[3/6] Instalando Runtimes C++:" -NoNewline
+# [3/7] Instalação dos Runtimes C++
+Write-Host "[3/7] Instalando Runtimes C++:" -NoNewline
 $Setup = Start-Process "$Source\runtimes\install_all.bat" -WindowStyle Hidden -PassThru -Wait
 if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
     Write-Host " Sucesso" -ForegroundColor Green
@@ -235,9 +237,9 @@ if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
 }
 Remove-Variable Setup -ErrorAction SilentlyContinue
 
-# [4/6] Instalação do Java
-Write-Host "[4/6] Instalando Java:" -NoNewline
-$Setup = Start-Process "$Source\runtimes\JavaSetup8u311.exe" -ArgumentList '/s' -WindowStyle Hidden -PassThru -Wait
+# [4/7] Instalação do Java
+Write-Host "[4/7] Instalando Java:" -NoNewline
+$Setup = Start-Process "$Source\runtimes\jre-8u441-windows-i586.exe" -ArgumentList '/s' -WindowStyle Hidden -PassThru -Wait
 if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
     Write-Host " Sucesso" -ForegroundColor Green
 } else {
@@ -245,8 +247,18 @@ if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
 }
 Remove-Variable Setup -ErrorAction SilentlyContinue
 
-# [5/6] Instalação dos General Runtimes
-Write-Host "[5/6] Instalando Runtimes:" -NoNewline
+# [5/7] Instalação do Java
+Write-Host "[5/7] Instalando Java:" -NoNewline
+$Setup = Start-Process "$Source\runtimes\jre-8u441-windows-x64.exe" -ArgumentList '/s' -WindowStyle Hidden -PassThru -Wait
+if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
+    Write-Host " Sucesso" -ForegroundColor Green
+} else {
+    Write-Host " Erro" -ForegroundColor Red
+}
+Remove-Variable Setup -ErrorAction SilentlyContinue
+
+# [6/7] Instalação dos General Runtimes
+Write-Host "[6/7] Instalando Runtimes:" -NoNewline
 $Setup = Start-Process "$Source\runtimes\General_Runtimes_Installer.exe" -ArgumentList '/verysilent /norestart' -WindowStyle Hidden -PassThru -Wait
 if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
     Write-Host " Sucesso" -ForegroundColor Green
@@ -255,8 +267,8 @@ if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
 }
 Remove-Variable Setup -ErrorAction SilentlyContinue
 
-# [6/6] Instalação dos VB6 Runtimes
-Write-Host "[6/6] Instalando VB6 Runtimes:" -NoNewline
+# [7/7] Instalação dos VB6 Runtimes
+Write-Host "[7/7] Instalando VB6 Runtimes:" -NoNewline
 $Setup = Start-Process "$Source\runtimes\VB6.exe" -ArgumentList '/verysilent /norestart' -WindowStyle Hidden -PassThru
 if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
     Write-Host " Sucesso" -ForegroundColor Green
@@ -271,11 +283,65 @@ Clear-Host
 # 7. Exibição de Informações de Contato
 ###############################################################################
 
-Write-Host "AUTOMACAO DESENVOLVIDA POR DK" -ForegroundColor Blue -NoNewline
-Write-Host " Contato:"
-Write-Host "E-mail: djohnhermann@gmail.com" -ForegroundColor Gray
-Write-Host "WhatsApp: (47) 99151-6592" -ForegroundColor Green
-Write-Host "Facebook: Djohn Klitzke" -ForegroundColor Blue
-Write-Host "Instagram: djohn.klitzke" -ForegroundColor Red
+$publicDesktop = [System.IO.Path]::Combine($env:PUBLIC, "Desktop")
+$htmlFile = "$publicDesktop\LEIA-ME.html"
+
+$htmlContent = @"
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automação DKOS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        h1 {
+            color: blue;
+        }
+        .contact {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .email {
+            color: gray;
+        }
+        .whatsapp {
+            color: green;
+        }
+        .facebook {
+            color: blue;
+        }
+        .instagram {
+            color: red;
+        }
+        .pix {
+            color: rgb(192, 18, 207);
+        }
+        .underline {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>AUTOMAÇÃO DESENVOLVIDA POR: <span class="underline">Djohn H. Klitzke</span></h1>
+    <div class="contact">
+        <p><strong>Contato:</strong></p>
+        <p class="email">E-mail: <a href="mailto:djohnhermann@gmail.com">djohnhermann@gmail.com</a></p>
+        <p class="whatsapp">WhatsApp: <a href="https://wa.me/5547991516592" target="_blank">(47) 99151-6592</a></p>
+        <p class="facebook">Facebook: <a href="https://www.facebook.com/djohn.hermann" target="_blank">Djohn Klitzke</a></p>
+        <p class="instagram">Instagram: <a href="https://www.instagram.com/djohnklitzke" target="_blank">djohn.klitzke</a></p>
+        <p class="pix">Pix: djohnhermann@gmail.com</p>
+    </div>
+</body>
+</html>
+"@
+
+$htmlContent | Set-Content -Path $htmlFile -Encoding UTF8
+Write-Host "Arquivo HTML criado na área de trabalho pública: $htmlFile"
+
 
 Start-Sleep -Seconds 10
