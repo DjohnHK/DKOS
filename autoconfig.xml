@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend">
+  <settings pass="windowsPE">
+    <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <SetupUILanguage>
+        <UILanguage>pt-BR</UILanguage>
+      </SetupUILanguage>
+      <InputLocale>00010416</InputLocale>
+      <SystemLocale>pt-BR</SystemLocale>
+      <UILanguage>pt-BR</UILanguage>
+      <UserLocale>pt-BR</UserLocale>
+    </component>
+    <component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <ImageInstall>
+        <OSImage>
+          <InstallFrom>
+            <MetaData wcm:action="add">
+              <Key>/IMAGE/INDEX</Key>
+              <Value>1</Value>
+            </MetaData>
+          </InstallFrom>
+          <WillShowUI>OnError</WillShowUI>
+          <InstallToAvailablePartition>false</InstallToAvailablePartition>
+        </OSImage>
+      </ImageInstall>
+      <UserData>
+        <ProductKey>
+          <WillShowUI>Never</WillShowUI>
+          <Key></Key>
+        </ProductKey>
+        <AcceptEula>true</AcceptEula>
+        <Organization></Organization>
+      </UserData>
+      <EnableNetwork>true</EnableNetwork>
+    </component>
+  </settings>
+  <settings pass="oobeSystem">
+    <component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <InputLocale>pt-BR</InputLocale>
+      <SystemLocale>pt-BR</SystemLocale>
+      <UILanguage>pt-BR</UILanguage>
+      <UserLocale>pt-BR</UserLocale>
+    </component>
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <OOBE>
+        <HideEULAPage>true</HideEULAPage>
+        <ProtectYourPC>1</ProtectYourPC>
+        <HideWirelessSetupInOOBE>false</HideWirelessSetupInOOBE>
+      </OOBE>
+      <RegisteredOrganization></RegisteredOrganization>
+      <RegisteredOwner />
+      <TimeZone>E. South America Standard Time</TimeZone>
+      <!-- Configurar AutoLogon com senha vazia -->
+      <AutoLogon>
+        <Password>
+          <Value>123</Value>
+          <PlainText>true</PlainText>
+        </Password>
+        <Enabled>true</Enabled>
+        <LogonCount>1</LogonCount>
+        <Username>DK</Username>
+      </AutoLogon>
+      <FirstLogonCommands>
+        <SynchronousCommand wcm:action="add">
+          <CommandLine>cmd /c powershell Set-ExecutionPolicy Unrestricted</CommandLine>
+          <Order>1</Order>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <CommandLine>cmd /c echo list volume >volumes.txt</CommandLine>
+          <Order>2</Order>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <CommandLine>cmd /c powershell dir c:\temp\sw ^| Unblock-File</CommandLine>
+          <Order>3</Order>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <CommandLine>cmd /c powershell dir c:\temp\sw\Scripts ^| Unblock-File</CommandLine>
+          <Order>4</Order>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <CommandLine>cmd /c powershell "c:\temp\sw\script.ps1"</CommandLine>
+          <Order>5</Order>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <CommandLine>cmd /c powershell "c:\temp\sw\Scripts\remove-onedrive.ps1"</CommandLine>
+          <Order>6</Order>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <CommandLine>cmd /c powershell "c:\temp\sw\Scripts\cleandisk.ps1"</CommandLine>
+          <Order>7</Order>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <CommandLine>cmd /c powershell "c:\temp\sw\Scripts\temp-delete.ps1"</CommandLine>
+          <Order>8</Order>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <CommandLine>reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoLogonCount /t REG_DWORD /d 0 /f</CommandLine>
+          <Order>9</Order>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <CommandLine>reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdminLogon /t REG_DWORD /d 0 /f</CommandLine>
+          <Order>10</Order>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+        <SynchronousCommand wcm:action="add">
+          <CommandLine>cmd /c net user DK ""</CommandLine>
+          <Order>11</Order>
+          <RequiresUserInput>false</RequiresUserInput>
+        </SynchronousCommand>
+      </FirstLogonCommands>
+      <UserAccounts>
+        <LocalAccounts>
+          <!-- Criar conta DK sem senha e configurada para nunca expirar -->
+          <LocalAccount wcm:action="add">
+            <Password>
+              <Value>123</Value>
+              <PlainText>true</PlainText>
+            </Password>
+            <Name>DK</Name>
+            <Group>Administrators</Group>
+            <DisplayName>DK</DisplayName>
+            <Description>Usuário padrão, conta local</Description>
+          </LocalAccount>
+        </LocalAccounts>
+      </UserAccounts>
+    </component>
+  </settings>
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <ComputerName>DKOSV3</ComputerName>
+      <RegisteredOrganization />
+      <RegisteredOwner />
+      <ProductKey>W269N-WFGWX-YVC9B-4J6C9-T83GX</ProductKey>
+      <OEMInformation>
+        <SupportProvider>DKOS V3</SupportProvider>
+        <SupportAppURL>DK-OS-SUPPORT</SupportAppURL>
+        <SupportURL>https://sites.google.com/view/dkinformatica</SupportURL>
+      </OEMInformation>
+    </component>
+    <component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <RunSynchronous>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Path>reg.exe add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v EnableFirstLogonAnimation /d 0 /t REG_DWORD /f</Path>
+        </RunSynchronousCommand>
+        <RunSynchronousCommand wcm:action="add">
+          <Order>2</Order>
+          <Path>reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" /v EnableFirstLogonAnimation /d 0 /t REG_DWORD /f</Path>
+        </RunSynchronousCommand>
+      </RunSynchronous>
+    </component>
+  </settings>
+</unattend>
