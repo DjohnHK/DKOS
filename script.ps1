@@ -327,7 +327,7 @@ $htmlContent = @"
     </style>
 </head>
 <body>
-    <h1>AUTOMAÇÃO DESENVOLVIDA POR: <span class="underline">Djohn H. Klitzke</span></h1>
+    <h1>AUTOMACAO DESENVOLVIDA POR: <span class="underline">Djohn H. Klitzke</span></h1>
     <div class="contact">
         <p><strong>Contato:</strong></p>
         <p class="email">E-mail: <a href="mailto:djohnhermann@gmail.com">djohnhermann@gmail.com</a></p>
