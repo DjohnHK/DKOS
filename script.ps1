@@ -149,10 +149,12 @@ reg delete "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\ContentDeliveryManage
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v EnablePrefetcher /t REG_DWORD /d 5 /f
 reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" /v EnableSuperfetch /t REG_DWORD /d 5 /f
 
-# Desabilita "News and Interests e Meet Now" na barra de tarefas
+# Desabilita "News and Interests, Meet Now, Task View e Search Bar" na barra de tarefas
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Feeds" /v "ShellFeedsTaskbarViewMode" /d 2 /t REG_DWORD /f
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" /v "HideSCAMeetNow" /d 1 /t REG_DWORD /f
 reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Feeds" /v "EnableFeeds" /d 0 /t REG_DWORD /f
+reg add "HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v "ShowTaskViewButton" /d 0 /t REG_DWORD /f
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Search" /v "SearchboxTaskbarMode" /d 0 /t REG_DWORD /f
 
 ###############################################################################
 # 4. Configurações do Usuário e Sistema
@@ -237,8 +239,8 @@ if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
 }
 Remove-Variable Setup -ErrorAction SilentlyContinue
 
-# [4/7] Instalação do Java
-Write-Host "[4/7] Instalando Java:" -NoNewline
+# [4/7] Instalação do Java 32
+Write-Host "[4/7] Instalando Java 32 bits:" -NoNewline
 $Setup = Start-Process "$Source\runtimes\jre-8u441-windows-i586.exe" -ArgumentList '/s' -WindowStyle Hidden -PassThru -Wait
 if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
     Write-Host " Sucesso" -ForegroundColor Green
@@ -247,8 +249,8 @@ if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
 }
 Remove-Variable Setup -ErrorAction SilentlyContinue
 
-# [5/7] Instalação do Java
-Write-Host "[5/7] Instalando Java:" -NoNewline
+# [5/7] Instalação do Java 64
+Write-Host "[5/7] Instalando Java 64 bits:" -NoNewline
 $Setup = Start-Process "$Source\runtimes\jre-8u441-windows-x64.exe" -ArgumentList '/s' -WindowStyle Hidden -PassThru -Wait
 if ($Setup.ExitCode -eq 0 -or $Setup.ExitCode -eq 3010){
     Write-Host " Sucesso" -ForegroundColor Green
