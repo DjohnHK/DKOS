@@ -341,7 +341,5 @@ $htmlContent = @"
 "@
 
 $htmlContent | Set-Content -Path $htmlFile -Encoding UTF8
-Write-Host "Arquivo HTML criado na área de trabalho pública: $htmlFile"
-
 
 Start-Sleep -Seconds 10
