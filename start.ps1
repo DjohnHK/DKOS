@@ -101,6 +101,6 @@ if ($IsUEFI) {
 # ===============================================================
 # Parte 9: Finalizar e reiniciar
 # ===============================================================
-Write-Host "Instalacaoo concluida! Reiniciando..." -ForegroundColor Yellow
+Write-Host "Instalacao concluida! Reiniciando..." -ForegroundColor Yellow
 
 wpeutil reboot
