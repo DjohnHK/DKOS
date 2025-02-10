@@ -39,12 +39,33 @@ $IsUEFI = $FirmwareType -eq "UEFI"
 Write-Host "Modo de boot: $FirmwareType"
 
 # ===============================================================
-# Parte 4: Apagar e configurar o disco com diskpart
+# Parte 4: Mostrar discos e permitir seleção para formatação
 # ===============================================================
-Write-Host "Formatando o disco..."
+
+Write-Host "Exibindo discos disponíveis..."
+$discos = (Get-Disk)
+
+# Mostrar discos disponíveis
+$discos | ForEach-Object {
+    Write-Host "$($_.Number): $($_.FriendlyName) - $($_.Size)"
+}
+
+# Solicitar ao usuário para escolher o disco a ser formatado
+$diskSelecionado = Read-Host "Digite o número do disco que deseja formatar (ex: 0)"
+
+# Verificar se o número do disco é válido
+$discoSelecionado = $discos | Where-Object { $_.Number -eq [int]$diskSelecionado }
+if (-not $discoSelecionado) {
+    Write-Host "Número de disco inválido!" -ForegroundColor Red
+    exit
+}
+
+Write-Host "Você selecionou o disco $diskSelecionado. Procedendo com a formatação..."
+
+# Formatar o disco selecionado com diskpart
 $DiskPartScript = if ($IsUEFI) {
     @"
-select disk 0
+select disk $diskSelecionado
 clean
 convert gpt
 create partition efi size=100
@@ -57,7 +78,7 @@ exit
 "@
 } else {
     @"
-select disk 0
+select disk $diskSelecionado
 clean
 convert mbr
 create partition primary
