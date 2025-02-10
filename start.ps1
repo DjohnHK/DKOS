@@ -42,25 +42,42 @@ Write-Host "Modo de boot: $FirmwareType"
 # Parte 4: Mostrar discos e permitir seleção para formatação
 # ===============================================================
 
-Write-Host "Exibindo discos disponíveis..."
-$discos = (Get-Disk)
+# Solicitar ao usuario para escolher o disco a ser formatado
+$diskSelecionado = $null
+do {
+    Clear-Host
+    # Texto de solicitacao com formatacao e cor chamativa
+    Write-Host "`nSelecione o numero do disco que deseja formatar!" -ForegroundColor White -BackgroundColor DarkBlue 
+    Write-Host "Exemplo: 0 (para o primeiro disco) ou 1, 2, etc." -ForegroundColor Yellow
 
-# Mostrar discos disponíveis
-$discos | ForEach-Object {
-    Write-Host "$($_.Number): $($_.FriendlyName) - $($_.Size)"
+    $discos = (Get-Disk)
+
+    # Mostrar discos disponíveis com o tamanho em GB
+    $discos | ForEach-Object {
+    $tamanhoGB = [math]::round($_.Size / 1GB, 2)  # Converte o tamanho para GB com 2 casas decimais
+    Write-Host "`n$($_.Number): $($_.FriendlyName) - $tamanhoGB GB" -BackgroundColor DarkGreen  
 }
 
-# Solicitar ao usuário para escolher o disco a ser formatado
-$diskSelecionado = Read-Host "Digite o número do disco que deseja formatar (ex: 0)"
+    # Solicitar entrada do usuario
+    $entrada = Read-Host "`nDigite o numero do disco (ex: 0)" | Out-String
+    $entrada = $entrada.Trim()
 
-# Verificar se o número do disco é válido
-$discoSelecionado = $discos | Where-Object { $_.Number -eq [int]$diskSelecionado }
-if (-not $discoSelecionado) {
-    Write-Host "Número de disco inválido!" -ForegroundColor Red
-    exit
-}
+    # Verificar se a entrada e um numero inteiro valido
+    if (-not [int]::TryParse($entrada, [ref]$diskSelecionado)) {
+        Write-Host "Entrada invalida! Por favor, digite um numero inteiro valido." -ForegroundColor Red
+        Start-Sleep 5
+        $diskSelecionado = $null
+    } else {
+        # Verificar se o numero do disco existe na lista
+        $discoSelecionado = $discos | Where-Object { $_.Number -eq $diskSelecionado }
+        if (-not $discoSelecionado) {
+            Write-Host "Numero de disco invalido! Tente novamente." -ForegroundColor Red
+            start-sleep 5
+        }
+    }
+} while (-not $discoSelecionado)
 
-Write-Host "Você selecionou o disco $diskSelecionado. Procedendo com a formatação..."
+Write-Host "`nVoce selecionou o disco $diskSelecionado. Procedendo com a formatacao..." -ForegroundColor Green
 
 # Formatar o disco selecionado com diskpart
 $DiskPartScript = if ($IsUEFI) {
@@ -92,12 +109,14 @@ $DiskPartScript | diskpart
 # Aguardar alguns segundos para que o volume C seja reconhecido
 Start-Sleep -Seconds 5
 
-Write-Host "Instalando Windows..."
+Clear-Host
+Write-Host "Instalando Windows..." -ForegroundColor Green
 dism /Apply-Image /ImageFile:$InstallEsd /Index:1 /ApplyDir:C:\
 
 # ===============================================================
 # Parte 6: Copiar o unattend.xml para automação da instalação
 # ===============================================================
+Clear-Host
 Write-Host "Copiando unattend.xml..."
 New-Item -ItemType Directory -Path "C:\Windows\Panther" -Force | Out-Null
 Copy-Item -Path $UnattendPath -Destination "C:\Windows\Panther\unattend.xml" -Force
@@ -112,6 +131,7 @@ Copy-Item -Path "$penDrive\SW\*" -Destination $DestinoPastaSW -Recurse -Force
 # ===============================================================
 # Parte 8: Configurar o boot
 # ===============================================================
+Clear-Host
 Write-Host "Configurando o boot..."
 if ($IsUEFI) {
     bcdboot "C:\Windows" /s S: /f UEFI
@@ -122,6 +142,8 @@ if ($IsUEFI) {
 # ===============================================================
 # Parte 9: Finalizar e reiniciar
 # ===============================================================
+Clear-Host
+
 Write-Host "Instalacao concluida! Reiniciando..." -ForegroundColor Yellow
 
 wpeutil reboot
