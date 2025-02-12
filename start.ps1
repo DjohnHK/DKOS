@@ -99,6 +99,7 @@ select disk $diskSelecionado
 clean
 convert mbr
 create partition primary
+active
 format fs=ntfs quick
 assign letter=C
 exit
